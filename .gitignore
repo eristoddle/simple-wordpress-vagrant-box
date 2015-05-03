@@ -1,0 +1,9 @@
+/files/shared
+/files/local-config.php
+/sql-dump-*.sql
+/db-sync
+/files/content/upgrade/
+.DS_Store
+.vagrant
+.idea
+modules
