@@ -3,9 +3,9 @@ echo '### Create Virtualhost ###'
 
 block="<VirtualHost *:80>
         ServerName wordpress.local
-        DocumentRoot /vagrant
+        DocumentRoot /var/www/html
 
-       <Directory /vagrant>
+       <Directory /var/www/html>
           AllowOverride all
           Order allow,deny
           Allow from all
@@ -22,4 +22,5 @@ block="<VirtualHost *:80>
 
 echo "$block" > "/etc/apache2/sites-available/wordpress.local.conf"
 ln -fs "/etc/apache2/sites-available/wordpress.local.conf" "/etc/apache2/sites-enabled/wordpress.local.conf"
+rm /var/www/html/index.html
 service apache2 restart
