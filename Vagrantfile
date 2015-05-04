@@ -10,23 +10,21 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Change this as your needs
   config.vm.hostname = 'wordpress.local'
 
-  config.vm.synced_folder "./files", "/home/vagrant/releases/current"
-  config.vm.synced_folder "./shared", "/home/vagrant/shared"
+  config.vm.synced_folder "./wordpress", "/vagrant"
 
-  config.vm.provision :shell,
-    inline: "sudo apt-get update -y && sudo apt-get install puppet -y"
-
-  config.vm.provision :shell,
-    inline: "sudo usermod -a -G www-data vagrant"
-
-  config.vm.provision :shell,
-    inline: "sudo chown -R vagrant:www-data /home/vagrant && sudo chmod -R g+w /home/vagrant && sudo chmod g+s /home/vagrant"
-
-  config.vm.provision :puppet do |puppet|
-    puppet.manifests_path = "manifests"
-    puppet.manifest_file  = "wordpress_kickstart.pp"
-
-    puppet.module_path = "./modules"
-    puppet.options = "--verbose"
+  # Configure A Few VirtualBox Settings
+  config.vm.provider "virtualbox" do |vb|
+    vb.name = 'phalcon-box'
+    vb.customize ["modifyvm", :id, "--memory", "512"]
+    vb.customize ["modifyvm", :id, "--cpus", "1"]
+    vb.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
+    vb.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+    vb.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
   end
+  
+  config.vm.provision :shell, :path => "provision/shell/install_init.sh"
+  config.vm.provision :shell, :path => "provision/shell/install_apache.sh"
+  config.vm.provision :shell, :path => "provision/shell/install_mysql.sh"
+  config.vm.provision :shell, :path => "provision/shell/install_php.sh"
+  config.vm.provision :shell, :path => "provision/shell/create_virtualhost.sh"
 end
